@@ -1,32 +1,35 @@
 version: '2'
 services:
   mysql:
-    build: ./mysql
-    env_file: ./.env
+    build: ${PWD}/mysql
+    env_file: ${PWD}/.env
     volumes:
       # 起動時に読ませたいSQLはここに置く
-      - ./mysql/init:/docker-entrypoint-initdb.d
+      - ${PWD}/mysql/init:/docker-entrypoint-initdb.d
       # DBのデータそのものがここに置かれる
-      - ./mysql/data:/var/lib/mysql
+      - ${PWD}/mysql/data:/var/lib/mysql
   phpmyadmin:
-    build: ./phpmyadmin
-    env_file: ./.env
+    build: ${PWD}/phpmyadmin
+    env_file: ${PWD}/.env
     ports:
       # 8081ポートでコンテナの外に公開する
       - '8081:80'
     volumes:
-      - ./phpmyadmin/sessions:/sessions
+      # セッション関係の自動生成ファイルが置かれる
+      - ${PWD}/phpmyadmin/sessions:/sessions
+      # phpMyAdminのソースが置かれる
+      - ${PWD}/phpmyadmin/src:/var/www/html
     depends_on:
       - mysql
   wordpress:
-    build: ./wordpress
-    env_file: ./.env
+    build: ${PWD}/wordpress
+    env_file: ${PWD}/.env
     ports:
       # 8080ポートでコンテナの外に公開する
       - '8080:80'
     volumes:
       # WPの構成ファイルはここに置く
-      - ./wordpress/src:/var/www/html
+      - ${PWD}/wordpress/src:/var/www/html
     depends_on:
       - mysql
 
