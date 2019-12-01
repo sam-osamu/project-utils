@@ -1,37 +1,52 @@
 version: '2'
 services:
   mysql:
-    build: ${PWD}/mysql
-    env_file: ${PWD}/.env
+    build: ./mysql
+    env_file: ./.env
     volumes:
       # 起動時に読ませたいSQLはここに置く
-      - ${PWD}/mysql/init:/docker-entrypoint-initdb.d
+      - ./mysql/init:/docker-entrypoint-initdb.d
       # DBのデータそのものがここに置かれる
-      - ${PWD}/mysql/data:/var/lib/mysql
+      - ./mysql/data:/var/lib/mysql
+
   phpmyadmin:
-    build: ${PWD}/phpmyadmin
-    env_file: ${PWD}/.env
+    build: ./phpmyadmin
+    env_file: ./.env
     ports:
       # 8081ポートでコンテナの外に公開する
       - '8081:80'
     volumes:
       # セッション関係の自動生成ファイルが置かれる
-      - ${PWD}/phpmyadmin/sessions:/sessions
+      - ./phpmyadmin/sessions:/sessions
       # phpMyAdminのソースが置かれる
-      - ${PWD}/phpmyadmin/src:/var/www/html
+      - ./phpmyadmin/src:/var/www/html
     depends_on:
       - mysql
-  php:
-    build: ${PWD}/php
-    env_file: ${PWD}/.env
+
+  app:
+    build: ./app
+    env_file: ./.env
+    volumes:
+      # PHPのソースはここに置く
+      - ./app/src:/var/www/html
+    depends_on:
+      - mysql
+
+  web:
+    build: ./web
+    env_file: ./.env
     ports:
       # 8080ポートでコンテナの外に公開する
       - '8080:80'
-    volumes:
-      # PHPのソースはここに置く
-      - ${PWD}/php/src:/var/www/html
     depends_on:
-      - mysql
+      - app
+
+  cron:
+    build: ./cron
+    env_file: ./.env
+    volumes:
+      - ./cron/resource/cron:/var/spool/cron
+      - /var/run/docker.sock:/var/run/docker.sock
 
 volumes:
   db-data:
