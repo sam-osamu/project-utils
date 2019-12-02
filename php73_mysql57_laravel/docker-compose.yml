@@ -45,7 +45,6 @@ services:
     build: ./cron
     env_file: ./.env
     volumes:
-      - ./cron/resource/cron:/var/spool/cron
       - /var/run/docker.sock:/var/run/docker.sock
 
 volumes:
