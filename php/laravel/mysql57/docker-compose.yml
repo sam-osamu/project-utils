@@ -27,8 +27,10 @@ services:
     build: ./app
     env_file: ./.env
     volumes:
-      # PHPのソースはここに置く
-      - ./app/src:/var/www/html
+      # ソースはここに置く
+      - ./src:/var/www/html
+      # リポジトリがフロントとバックで別れている場合はマウント先を分けてもいい
+      # - ./app/src:/var/www/html
     depends_on:
       - mysql
 
@@ -38,6 +40,11 @@ services:
     ports:
       # 8080ポートでコンテナの外に公開する
       - '8080:80'
+    volumes:
+      # ソースはここに置く
+      - ./src:/var/www/html
+      # リポジトリがフロントとバックで別れている場合はマウント先を分けてもいい
+      # - ./web/src:/var/www/html
     depends_on:
       - app
 
