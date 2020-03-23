@@ -1,0 +1,2 @@
+# e.g.
+* * * * * docker exec php73mysql57laravel_app_1 php artisan schedule:run
