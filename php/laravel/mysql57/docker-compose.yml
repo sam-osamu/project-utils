@@ -1,7 +1,8 @@
 version: '2'
 services:
   mysql:
-    build: ./mysql
+    build:
+      context: ./mysql
     env_file: ./.env
     volumes:
       # 起動時に読ませたいSQLはここに置く
@@ -10,7 +11,8 @@ services:
       - ./mysql/data:/var/lib/mysql
 
   phpmyadmin:
-    build: ./phpmyadmin
+    build:
+      context: ./phpmyadmin
     env_file: ./.env
     ports:
       # 8081ポートでコンテナの外に公開する
@@ -24,7 +26,12 @@ services:
       - mysql
 
   app:
-    build: ./app
+    build:
+      context: ./app
+      args:
+        USER_NAME: $USER_NAME
+        USER_ID: $USER_ID
+        GROUP_ID: $GROUP_ID
     env_file: ./.env
     volumes:
       # ソースはここに置く
@@ -35,7 +42,12 @@ services:
       - mysql
 
   web:
-    build: ./web
+    build:
+      context: ./web
+      args:
+        USER_NAME: $USER_NAME
+        USER_ID: $USER_ID
+        GROUP_ID: $GROUP_ID
     env_file: ./.env
     ports:
       # 8080ポートでコンテナの外に公開する
@@ -49,7 +61,8 @@ services:
       - app
 
   cron:
-    build: ./cron
+    build:
+      context: ./cron
     env_file: ./.env
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock

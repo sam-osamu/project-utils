@@ -1,4 +1,15 @@
-FROM php:7.2.25-fpm
+FROM php:7.4.4-fpm
+
+ARG USER_NAME
+ARG USER_ID
+ARG GROUP_ID
+
+# Setup User
+RUN \
+  apt-get update && \
+  apt-get install -y sudo && \
+  useradd -u ${USER_ID} -o -m ${USER_NAME} -s /bin/bash && \
+  groupmod -g ${GROUP_ID} ${USER_NAME}
 
 RUN \
   # Change bash settings.
@@ -20,7 +31,6 @@ RUN \
     iputils-ping \
     net-tools \
     unzip \
-    nodejs \
     && \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/* && \

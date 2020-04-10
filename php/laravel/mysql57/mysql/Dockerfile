@@ -1,9 +1,8 @@
-FROM mysql:5.7.28
+FROM mysql:latest
+
 COPY ./my.cnf /etc/mysql/conf.d/
 
 RUN \
-  groupmod -g 1000 mysql && \
-  usermod -u 1000 -g 1000 mysql && \
   apt-get update && \
   apt-get -y install \
     vim \
